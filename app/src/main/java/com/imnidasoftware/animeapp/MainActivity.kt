@@ -3,12 +3,16 @@ package com.imnidasoftware.animeapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.pager.ExperimentalPagerApi
 import com.imnidasoftware.animeapp.navigation.SetupNavGraph
 import com.imnidasoftware.animeapp.ui.theme.AnimeAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
+@ExperimentalAnimationApi
+@ExperimentalPagerApi
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
