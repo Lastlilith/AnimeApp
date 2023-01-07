@@ -1,4 +1,4 @@
-package com.imnidasoftware.animeapp.data.reemote
+package com.imnidasoftware.animeapp.data.remote
 
 import com.imnidasoftware.animeapp.domain.model.ApiResponse
 import retrofit2.http.GET
