@@ -1,14 +1,11 @@
 package com.imnidasoftware.animeapp.presentation.screens.home
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.imnidasoftware.animeapp.presentation.components.RatingWidget
-import com.imnidasoftware.animeapp.ui.theme.LARGE_PADDING
+import com.imnidasoftware.animeapp.presentation.common.ListContent
 
 @Composable
 fun HomeScreen(
@@ -20,11 +17,12 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             HomeTopBar(onSearchClicked = {})
+        },
+        content = {
+            ListContent(
+                heroes = allHeroes,
+                navController = navController
+            )
         }
-    ) {
-        RatingWidget(
-            modifier = Modifier.padding(all = LARGE_PADDING),
-            rating = 4.5
-        )
-    }
+    )
 }
