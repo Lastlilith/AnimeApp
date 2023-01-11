@@ -3,6 +3,8 @@ package com.imnidasoftware.animeapp.di
 import android.content.Context
 import androidx.room.Room
 import com.imnidasoftware.animeapp.data.local.AnimeDatabase
+import com.imnidasoftware.animeapp.data.repository.LocalDataSourceImpl
+import com.imnidasoftware.animeapp.domain.repository.LocalDataSource
 import com.imnidasoftware.animeapp.util.Constants.ANIME_DATABASE
 import dagger.Module
 import dagger.Provides
@@ -26,4 +28,15 @@ object DatabaseModule {
             ANIME_DATABASE,
         ).build()
     }
+
+    @Provides
+    @Singleton
+    fun probideLocalDataSource(
+        database: AnimeDatabase
+    ): LocalDataSource {
+        return LocalDataSourceImpl(
+            animeDatabase = database
+        )
+    }
+
 }
