@@ -1,12 +1,15 @@
 package com.imnidasoftware.animeapp.presentation.screens.details
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -24,6 +27,7 @@ import com.imnidasoftware.animeapp.presentation.components.OrderedList
 import com.imnidasoftware.animeapp.ui.theme.*
 import com.imnidasoftware.animeapp.util.Constants.ABOUT_TEXT_MAX_LINES
 import com.imnidasoftware.animeapp.util.Constants.BASE_URL
+import com.imnidasoftware.animeapp.util.Constants.MIN_BACKGROUND_IMAGE
 
 @ExperimentalCoilApi
 @ExperimentalMaterialApi
@@ -35,7 +39,21 @@ fun DetailsContent(
     val scaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberBottomSheetState(initialValue = BottomSheetValue.Expanded)
     )
+
+    val currentSheetFraction = scaffoldState.currentSheetFraction
+    val radiusAnim by animateDpAsState(
+        targetValue =
+        if(currentSheetFraction == 1f)
+            EXTRA_LARGE_PADDING
+        else
+            EXPANDED_RADIUS_LEVEL
+    )
+
     BottomSheetScaffold(
+        sheetShape = RoundedCornerShape(
+            topStart = radiusAnim,
+            topEnd = radiusAnim
+        ),
         scaffoldState = scaffoldState,
         sheetPeekHeight = MIN_SHEET_HEIGHT,
         sheetContent = {
@@ -45,6 +63,7 @@ fun DetailsContent(
             selectedHero?.let { hero ->
                 BackgroundContent(
                     heroImage = hero.image,
+                    imageFraction = currentSheetFraction,
                     onCloseClicked = {
                         navController.popBackStack()
                     }
@@ -179,7 +198,7 @@ fun BackgroundContent(
         Image(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(imageFraction)
+                .fillMaxHeight(fraction = imageFraction + MIN_BACKGROUND_IMAGE)
                 .align(Alignment.TopStart),
             painter = painter,
             contentDescription = "Hero Image",
@@ -206,3 +225,19 @@ fun BackgroundContent(
         }
     }
 }
+
+@ExperimentalMaterialApi
+val BottomSheetScaffoldState.currentSheetFraction: Float
+    get() {
+        val fraction = bottomSheetState.progress.fraction
+        val targetValue = bottomSheetState.targetValue
+        val currentValue = bottomSheetState.currentValue
+
+        return when {
+            currentValue == BottomSheetValue.Collapsed && targetValue == BottomSheetValue.Collapsed -> 1f
+            currentValue == BottomSheetValue.Expanded && targetValue == BottomSheetValue.Expanded -> 0f
+            currentValue == BottomSheetValue.Collapsed && targetValue == BottomSheetValue.Expanded -> 1f - fraction
+            currentValue == BottomSheetValue.Expanded && targetValue == BottomSheetValue.Collapsed -> 0f + fraction
+            else -> fraction
+        }
+    }
