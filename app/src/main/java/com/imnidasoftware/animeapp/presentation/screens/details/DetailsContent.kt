@@ -1,23 +1,31 @@
 package com.imnidasoftware.animeapp.presentation.screens.details
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavHostController
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.rememberImagePainter
 import com.imnidasoftware.animeapp.R
 import com.imnidasoftware.animeapp.domain.model.Hero
 import com.imnidasoftware.animeapp.presentation.components.InfoBox
 import com.imnidasoftware.animeapp.presentation.components.OrderedList
 import com.imnidasoftware.animeapp.ui.theme.*
 import com.imnidasoftware.animeapp.util.Constants.ABOUT_TEXT_MAX_LINES
+import com.imnidasoftware.animeapp.util.Constants.BASE_URL
 
+@ExperimentalCoilApi
 @ExperimentalMaterialApi
 @Composable
 fun DetailsContent(
@@ -33,7 +41,16 @@ fun DetailsContent(
         sheetContent = {
             selectedHero?.let { BottomSheetContent(selectedHero = it) }
         },
-        content = {}
+        content = {
+            selectedHero?.let { hero ->
+                BackgroundContent(
+                    heroImage = hero.image,
+                    onCloseClicked = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+        }
     )
 }
 
@@ -137,6 +154,55 @@ fun BottomSheetContent(
                 items = selectedHero.natureTypes,
                 textColor = contentColor
             )
+        }
+    }
+}
+
+@ExperimentalCoilApi
+@Composable
+fun BackgroundContent(
+    heroImage: String,
+    imageFraction: Float = 1f,
+    backgroundColor: Color = MaterialTheme.colors.surface,
+    onCloseClicked: () -> Unit
+) {
+    val imageUrl = "$BASE_URL${heroImage}"
+    val painter = rememberImagePainter(imageUrl) {
+        error(R.drawable.ic_placeholder)
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(backgroundColor)
+    ) {
+        Image(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(imageFraction)
+                .align(Alignment.TopStart),
+            painter = painter,
+            contentDescription = "Hero Image",
+            contentScale = ContentScale.Crop
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
+            IconButton(
+                modifier = Modifier
+                    .padding(all = SMALL_PADDING),
+                onClick = { onCloseClicked() }
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .size(INFO_ICON_SIZE),
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Close",
+                    tint = Color.White
+                )
+            }
         }
     }
 }
