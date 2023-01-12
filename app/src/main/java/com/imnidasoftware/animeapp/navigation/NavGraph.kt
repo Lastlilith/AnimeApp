@@ -1,6 +1,7 @@
 package com.imnidasoftware.animeapp.navigation
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -16,6 +17,7 @@ import com.imnidasoftware.animeapp.presentation.screens.splash.SplashScreen
 import com.imnidasoftware.animeapp.presentation.screens.welcome.WelcomeScreen
 import com.imnidasoftware.animeapp.util.Constants.DETAILS_ARGUMENT_KEY
 
+@ExperimentalMaterialApi
 @ExperimentalCoilApi
 @ExperimentalAnimationApi
 @ExperimentalPagerApi
